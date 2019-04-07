@@ -1,7 +1,19 @@
 import React, { useState } from 'react'
+import axios from 'axios';
+import { useForm } from 'customHooks';
 
-const NewFriend = (props) => {
+const NewFriend = props => {
     const [clicked, setClicked] = useState(false);
+
+    const postFriend = () => {
+        axios
+            .post('http://localhost:5000/friends', fields)
+            .then(res => console.log(res.data.successMessage))
+            .catch(err => console.log(err))
+        props.setMounted(false)
+    }
+
+    const { fields, handleChanges, submit } = useForm(postFriend);
 
     return (
         <>
@@ -11,25 +23,26 @@ const NewFriend = (props) => {
             >Add New Friend</button>
             <form
                 style={{ display: clicked === false ? 'none' : 'flex' }}
-                onSubmit={props.newFriend}
+                onSubmit={submit}
             >
                 <label>Name:</label>
                 <input
                     name='name'
-                    value={props.friend.name}
-                    onChange={props.handleChanges}
+                    value={fields.name}
+                    onChange={handleChanges}
                 />
                 <label>Age:</label>
                 <input
                     name='age'
-                    value={props.friend.age}
-                    onChange={props.handleChanges}
+                    value={fields.age}
+                    onChange={handleChanges}
+                    type='number'
                 />
                 <label>E-mail:</label>
                 <input
                     name='email'
-                    value={props.friend.email}
-                    onChange={props.handleChanges}
+                    value={fields.email}
+                    onChange={handleChanges}
                 />
                 <button onClick={() => setClicked(false)}>Submit</button>
             </form>
